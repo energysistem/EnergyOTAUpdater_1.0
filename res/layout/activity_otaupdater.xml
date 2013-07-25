@@ -8,36 +8,52 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".OTAUpdater" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/device"
-        android:id="@+id/textView_device"
-        android:singleLine="false"/>
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test"
-            android:id="@+id/testbutton"
-            android:layout_marginTop="19dp"
-            android:layout_below="@+id/Firmware"
-            android:layout_alignLeft="@+id/textView_device"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Firmware:"
-            android:id="@+id/Firmware"
-            android:layout_below="@+id/textView_device"
-            android:layout_alignLeft="@+id/testbutton"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Servidor de actualizacion:"
-            android:id="@+id/textView_otaserverinfo"
-            android:layout_below="@+id/Firmware"
-            />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device"
+                    android:id="@+id/textView_device"
+                    android:singleLine="false"/>
+
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Firmware:"
+                    android:id="@+id/Firmware"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Servidor de actualizacion:"
+                    android:id="@+id/textView_otaserverinfo"/>
+        </LinearLayout>
+    </LinearLayout>
+
 
 </RelativeLayout>

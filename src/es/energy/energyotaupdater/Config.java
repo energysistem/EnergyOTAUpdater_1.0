@@ -5,5 +5,6 @@ package es.energy.energyotaupdater;
  */
 public class Config {
     public static final String OTA_SERVER_INFO = "energy.otaserverinfo";
+    public static final String OTA_FW_VERSION = "energy.otafwversion";
 
 }

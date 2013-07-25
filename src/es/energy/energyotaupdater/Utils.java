@@ -10,12 +10,20 @@ import java.util.Scanner;
 public class Utils {
 
     private static String serverinfo=null;
+    private static String fwversion=null;
 
     public static String getServerInfo() {
         if (serverinfo == null) {
             serverinfo = getprop(Config.OTA_SERVER_INFO);
         }
         return serverinfo;
+    }
+
+    public static String getFWVersion() {
+        if (fwversion == null) {
+            fwversion = getprop(Config.OTA_FW_VERSION);
+        }
+        return fwversion;
     }
 
     //busca linea en build.prop y la devuelve (o null si no la encuentra
