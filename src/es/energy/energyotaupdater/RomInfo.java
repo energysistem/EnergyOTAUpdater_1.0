@@ -11,15 +11,15 @@ public class RomInfo {
     public String romName;
     public String version;
     public String changelog;
-    public String server;
+    public String downurl;
     public String md5;
     public Date date;
 
-    public RomInfo(String romName, String version, String changelog, String server, String md5, Date date) {
+    public RomInfo(String romName, String version, String changelog, String downurl, String md5, Date date) {
         this.romName = romName;
         this.version = version;
         this.changelog = changelog;
-        this.server = server;
+        this.downurl = downurl;
         this.md5 = md5;
         this.date = date;
     }
@@ -28,7 +28,7 @@ public class RomInfo {
                 i.getStringExtra("info_rom"),
                 i.getStringExtra("info_version"),
                 i.getStringExtra("info_changelog"),
-                i.getStringExtra("info_server"),
+                i.getStringExtra("info_downurl"),
                 i.getStringExtra("info_md5"),
                 Utils.parseDate(i.getStringExtra("info_date")));
     }
@@ -37,7 +37,7 @@ public class RomInfo {
         i.putExtra("info_rom", romName);
         i.putExtra("info_version", version);
         i.putExtra("info_changelog", changelog);
-        i.putExtra("info_server", server);
+        i.putExtra("info_downurl", downurl);
         i.putExtra("info_md5", md5);
         i.putExtra("info_date", Utils.formatDate(date));
     }
