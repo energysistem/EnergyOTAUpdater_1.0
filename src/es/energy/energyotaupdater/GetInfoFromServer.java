@@ -51,14 +51,15 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
         }*/
 
         try {
-            //creo los parametros incluyendo dispositivo y rom
+            //creo los parametros incluyendo dispositivo, versión de firmware y versión de hardware
             ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
             params.add(new BasicNameValuePair("device", android.os.Build.DEVICE.toLowerCase()));
-            params.add(new BasicNameValuePair("rom", Utils.getFWVersion()));
-            params.add(new BasicNameValuePair("version", Utils.getHWVersion()));
+            params.add(new BasicNameValuePair("fwversion", Utils.getFWVersion()));
+            params.add(new BasicNameValuePair("hwversion", Utils.getHWVersion()));
 
             HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet(Utils.getServerInfo() + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            //TODO: cambiar a HttpGet get = new HttpGet(Utils.getServerInfo() + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            HttpGet get = new HttpGet("http://10.0.4.198:8080/index.php" + "?" + URLEncodedUtils.format(params, "UTF-8"));
             HttpResponse r = client.execute(get);
             int status = r.getStatusLine().getStatusCode();
             HttpEntity e = r.getEntity();
@@ -74,7 +75,8 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
 
                 return new RomInfo(
                         json.getString("rom"),
-                        json.getString("version"),
+                        json.getString("fwversion"),
+                        json.getString("hwversion"),
                         json.getString("changelog"),
                         json.getString("url"),
                         json.getString("md5"),
