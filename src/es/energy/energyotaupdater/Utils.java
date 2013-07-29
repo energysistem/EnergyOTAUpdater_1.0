@@ -22,6 +22,7 @@ public class Utils {
     private static String cachedOSSdPath = null;
     private static String cachedRcvrySdPath = null;
 
+    //obtener informacion de server desde build.prop, por defecto "updates.energysistem.com"
     public static String getServerInfo() {
         if (serverinfo == null) {
             serverinfo = getprop(Config.OTA_SERVER_INFO);
@@ -33,13 +34,18 @@ public class Utils {
         return serverinfo;
     }
 
+    //obtener información de versión de Firmware desde build.prop, por defecto 1.0.0
     public static String getFWVersion() {
         if (fwversion == null) {
             fwversion = getprop(Config.OTA_FW_VERSION);
         }
+        if (fwversion == null) {
+            fwversion = "1.0.0";
+        }
         return fwversion;
     }
 
+    //obtener version de Hardware desde build.prop, por defecto "A"
     public static String getHWVersion() {
         if (hwversion==null) {
             //TODO: coger hwversion de build.prop
@@ -47,13 +53,14 @@ public class Utils {
         return "A";
     }
 
+    //Función para comprobar si tenemos conexión de red
     public static boolean dataAvailable(Context ctx) {
         ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnected();
     }
 
-    //busca linea en build.prop y la devuelve (o null si no la encuentra
+    //busca linea en build.prop y la devuelve (o null si no la encuentra)
     private static String getprop(String name) {
         ProcessBuilder pb = new ProcessBuilder("/system/bin/getprop", name);
         pb.redirectErrorStream(true);
@@ -81,6 +88,7 @@ public class Utils {
         return null;
     }
 
+    //función para analizar fecha
     public static Date parseDate(String date) {
         if (date == null) return null;
         try {
@@ -91,15 +99,17 @@ public class Utils {
         return null;
     }
 
+    //función para formatear fecha
     public static String formatDate(Date date) {
         if (date == null) return null;
         return new SimpleDateFormat("yyyyMMdd-kkmm").format(date);
     }
 
+    //función que comprueba si una ROM obtenida desde el server es una actualización respecto a la versión instalada
     public static boolean isUpdate(RomInfo info) {
         if (info == null) return false;
-        if (info.version != null) {
-            if (getFWVersion() == null || !info.version.equalsIgnoreCase(getFWVersion())) return true;
+        if (info.fwversion != null) {
+            if (getFWVersion() == null || !info.fwversion.equalsIgnoreCase(getFWVersion())) return true;
         }
         /*
         if (info.date != null) {
@@ -108,6 +118,7 @@ public class Utils {
         return false;
     }
 
+    //función que obtiene el PATH de la SD en Android desde el build.prop, por defecto /sdcard
     public static String getOSSdPath() {
         if (cachedOSSdPath == null) {
             cachedOSSdPath = getprop(Config.OTA_SD_PATH_OS_PROP);
@@ -118,6 +129,7 @@ public class Utils {
         return cachedOSSdPath;
     }
 
+    //función que obtiene el PATH de la SD en el Recovery desde el build.prop, por defecto /sdcard
     public static String getRcvrySdPath() {
         if (cachedRcvrySdPath == null) {
             cachedRcvrySdPath = getprop(Config.OTA_SD_PATH_RECOVERY_PROP);
@@ -126,5 +138,15 @@ public class Utils {
             }
         }
         return cachedRcvrySdPath;
+    }
+
+    private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+    public static String byteArrToStr(byte[] bytes) {
+        StringBuffer str = new StringBuffer();
+        for (int q = 0; q < bytes.length; q++) {
+            str.append(HEX_DIGITS[(0xF0 & bytes[q]) >>> 4]);
+            str.append(HEX_DIGITS[0xF & bytes[q]]);
+        }
+        return str.toString();
     }
 }

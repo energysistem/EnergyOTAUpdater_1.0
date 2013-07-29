@@ -10,17 +10,20 @@ import java.io.File;
  * Created by DFV on 25/07/13.
  */
 public class Config {
+
+    //strings estáticas que indican los valores a buscar en el build.prop para configuración personalizada de actualización.
     public static final String OTA_SERVER_INFO = "energy.otaserverinfo";
     public static final String OTA_FW_VERSION = "energy.otafwversion";
     public static final String OTA_SD_PATH_OS_PROP = "energy.sdcardpath.android";
     public static final String OTA_SD_PATH_RECOVERY_PROP = "otaupdater.sdcardpath.recovery";
 
-
     public static final int WAKE_TIMEOUT = 30000;
 
+    //path de descarga del archivo de actualización
     public static final String DL_PATH = "/" + Utils.getOSSdPath() + "/ENERGY-Updater/download/";
     public static final File DL_PATH_FILE = new File(Config.DL_PATH);
 
+    //inicialización de los directorios de descarga
     static {
         if (DL_PATH_FILE.exists()) {
             if (!DL_PATH_FILE.isDirectory()) {
@@ -32,6 +35,7 @@ public class Config {
         }
     }
 
+    //bool que controlan si se deben mostrar notificaciones
     private boolean showNotif = true;
     private boolean ignoredDataWarn = false;
 
@@ -51,16 +55,18 @@ public class Config {
     private Config(Context ctx) {
         PREFS = ctx.getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
 
+        //obtenemos los datos desde la sesión anterior (guardados en preferences)
         showNotif = PREFS.getBoolean("showNotif", showNotif);
         ignoredDataWarn = PREFS.getBoolean("ignoredDataWarn", ignoredDataWarn);
 
-        lastVersion = PREFS.getInt("version", lastVersion);
+        lastVersion = PREFS.getInt("fwversion", lastVersion);
         lastDevice = PREFS.getString("device", lastDevice);
         lastHWVersion = PREFS.getString("curHWVersion", lastHWVersion);
 
+        //si ya teníamos información de una rom, la cargamos también
         if (PREFS.contains("info_rom")) {
             storedUpdate = new RomInfo(PREFS.getString("info_rom", null),
-                    PREFS.getString("info_version", null),
+                    PREFS.getString("info_fwversion", null),
                     PREFS.getString("info_hwversion",null),
                     PREFS.getString("info_changelog", null),
                     PREFS.getString("info_url", null),
@@ -126,7 +132,7 @@ public class Config {
     public void setValuesToCurrent() {
         synchronized (PREFS) {
             SharedPreferences.Editor editor = PREFS.edit();
-            editor.putInt("version", curVersion);
+            editor.putInt("fwversion", curVersion);
             editor.putString("device", curDevice);
             editor.putString("hwversion", curHWVersion);
             editor.commit();
@@ -148,11 +154,12 @@ public class Config {
         return storedUpdate;
     }
 
+    //función para guardar los datos de la nueva ROM encontrada en Preferences.
     public void storeUpdate(RomInfo info) {
         synchronized (PREFS) {
             SharedPreferences.Editor editor = PREFS.edit();
             editor.putString("info_rom", info.romName);
-            editor.putString("info_version", info.version);
+            editor.putString("info_fwversion", info.fwversion);
             editor.putString("info_hwversion", info.hwversion);
             editor.putString("info_changelog", info.changelog);
             editor.putString("info_url", info.downurl);
@@ -162,11 +169,12 @@ public class Config {
         }
     }
 
+    //borramos la información sobre la ROM almacenada en Preferences
     public void clearStoredUpdate() {
         synchronized (PREFS) {
             SharedPreferences.Editor editor = PREFS.edit();
             editor.remove("info_rom");
-            editor.remove("info_version");
+            editor.remove("info_fwversion");
             editor.remove("info_hwversion");
             editor.remove("info_changelog");
             editor.remove("info_url");

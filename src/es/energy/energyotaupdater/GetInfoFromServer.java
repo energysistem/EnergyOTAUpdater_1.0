@@ -14,6 +14,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 /**
@@ -57,12 +58,15 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
             params.add(new BasicNameValuePair("fwversion", Utils.getFWVersion()));
             params.add(new BasicNameValuePair("hwversion", Utils.getHWVersion()));
 
+            //lanzo la petición mágica al server indicado en el build.prop
             HttpClient client = new DefaultHttpClient();
             //TODO: cambiar a HttpGet get = new HttpGet(Utils.getServerInfo() + "?" + URLEncodedUtils.format(params, "UTF-8"));
             HttpGet get = new HttpGet("http://10.0.4.198:8080/index.php" + "?" + URLEncodedUtils.format(params, "UTF-8"));
             HttpResponse r = client.execute(get);
             int status = r.getStatusLine().getStatusCode();
             HttpEntity e = r.getEntity();
+
+            //recibo respuesta, si el server está activo, obtengo los datos de la última ROM para el dispositivo (los obtiene el PHP)
             if (status == 200) {
                 String data = EntityUtils.toString(e);
                 JSONObject json = new JSONObject(data);
@@ -80,7 +84,7 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
                         json.getString("changelog"),
                         json.getString("url"),
                         json.getString("md5"),
-                        Utils.parseDate(json.getString("date")));
+                        Date.valueOf(json.getString("date")));
             } else {
                 if (e != null) e.consumeContent();
                 error = "Server responded with error " + status;
