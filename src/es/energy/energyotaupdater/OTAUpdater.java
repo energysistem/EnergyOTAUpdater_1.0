@@ -134,11 +134,11 @@ public class OTAUpdater extends Activity {
                 //TODO: modificar nombre de archivo (estudiar coger extensión o procesador de build.prop)
 
                 String extension="";
-                if(info.type=="R")
+                if(info.type.equalsIgnoreCase("R"))
                 {
                     extension="img";
                 }
-                else if(info.type=="Z")
+                else if(info.type.equalsIgnoreCase("Z"))
                 {
                     extension="zip";
                 }
