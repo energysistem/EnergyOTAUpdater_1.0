@@ -85,7 +85,7 @@ public class Install {
     private static void instalacionZIPNormal(File command, String archivoconruta){
         try
         {
-            //metemos la linea mágica de rockchip en el archivo command
+            //metemos la linea mágica genérica en el archivo command
             FileWriter filewriter = new FileWriter(command);
             filewriter.write("--update_package="+archivoconruta);
             filewriter.write("\n");
