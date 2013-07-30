@@ -71,7 +71,8 @@ public class Config {
                     PREFS.getString("info_changelog", null),
                     PREFS.getString("info_url", null),
                     PREFS.getString("info_md5", null),
-                    Utils.parseDate(PREFS.getString("info_date", null)));
+                    Utils.parseDate(PREFS.getString("info_date", null)),
+                    PREFS.getString("info_type", null));
         }
 
         try {
@@ -165,6 +166,7 @@ public class Config {
             editor.putString("info_url", info.downurl);
             editor.putString("info_md5", info.md5);
             editor.putString("info_date", Utils.formatDate(info.date));
+            editor.putString("info_type", info.type);
             editor.commit();
         }
     }
@@ -180,6 +182,7 @@ public class Config {
             editor.remove("info_url");
             editor.remove("info_md5");
             editor.remove("info_date");
+            editor.remove("info_type");
             editor.commit();
         }
     }

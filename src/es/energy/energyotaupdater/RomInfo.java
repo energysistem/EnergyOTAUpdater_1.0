@@ -16,9 +16,10 @@ public class RomInfo {
     public String downurl;
     public String md5;
     public Date date;
+    public String type;
 
     //constructor con valores por defecto
-    public RomInfo(String romName, String fwversion, String hwversion, String changelog, String downurl, String md5, Date date) {
+    public RomInfo(String romName, String fwversion, String hwversion, String changelog, String downurl, String md5, Date date, String type) {
         this.romName = romName;
         this.fwversion = fwversion;
         this.hwversion = hwversion;
@@ -26,6 +27,7 @@ public class RomInfo {
         this.downurl = downurl;
         this.md5 = md5;
         this.date = date;
+        this.type = type;
     }
     public static RomInfo fromIntent(Intent i) {
         return new RomInfo(
@@ -35,7 +37,8 @@ public class RomInfo {
                 i.getStringExtra("info_changelog"),
                 i.getStringExtra("info_downurl"),
                 i.getStringExtra("info_md5"),
-                Utils.parseDate(i.getStringExtra("info_date")));
+                Utils.parseDate(i.getStringExtra("info_date")),
+                i.getStringExtra("info_type"));
     }
 
     public void addToIntent(Intent i) {
@@ -46,6 +49,7 @@ public class RomInfo {
         i.putExtra("info_downurl", downurl);
         i.putExtra("info_md5", md5);
         i.putExtra("info_date", Utils.formatDate(date));
+        i.putExtra("info_type", type);
     }
 
 }

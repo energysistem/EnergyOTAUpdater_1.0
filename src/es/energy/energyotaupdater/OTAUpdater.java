@@ -29,11 +29,13 @@ import java.security.MessageDigest;
 public class OTAUpdater extends Activity {
 
     private DownloadTask dlTask;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otaupdater);
+        context=getApplicationContext();
 
         //Obtengo el nombre de dispositivo
         TextView text_device=(TextView)findViewById(R.id.textView_device);
@@ -130,7 +132,18 @@ public class OTAUpdater extends Activity {
 
                 //creo la tarea de descarga del archivo
                 //TODO: modificar nombre de archivo (estudiar coger extensión o procesador de build.prop)
-                final File file = new File(Config.DL_PATH_FILE, "update.img");
+
+                String extension="";
+                if(info.type=="R")
+                {
+                    extension="img";
+                }
+                else if(info.type=="Z")
+                {
+                    extension="zip";
+                }
+
+                final File file = new File(Config.DL_PATH_FILE, "update"+extension);
                 dlTask = new DownloadTask(progressDialog, info, file);
 
                 //añadimos un botón cancelar a la descarga
@@ -320,7 +333,20 @@ public class OTAUpdater extends Activity {
                 }
                 if (os != null) {
                     try { os.flush(); os.close(); }
-                    catch (Exception e) { }
+                    catch (Exception e) {
+                        try{
+                            wait(5000);
+                            os.flush(); os.close();
+                        }
+                        catch (InterruptedException ie)
+                        {
+
+                        }
+                        catch (Exception egeneral)
+                        {
+
+                        }
+                    }
                 }
             }
             return -1;
@@ -369,7 +395,8 @@ public class OTAUpdater extends Activity {
             switch (result) {
                 case 0:
                     //TODO: llamar a función instalar instalar ----- ListFilesActivity.installFileDialog(ctx, destFile);
-                    Toast.makeText(ctx, "TOSTADA!!!: Descarga finalizada, ahora iríamos a instalar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ctx, "TOSTADA!!!: Descarga finalizada, ahora iríamos a instalar", Toast.LENGTH_LONG).show();
+                    Install.installFileDialog(ctx,destFile,info.type);
                     break;
                 case 1:
                     Toast.makeText(ctx, "TOSTADA!!!: No coincide el MD5", Toast.LENGTH_SHORT).show();
@@ -398,6 +425,11 @@ public class OTAUpdater extends Activity {
             if (values.length == 1) return;
             dialog.setMax(values[1] / scale);
         }
+    }
+
+    public static Context getContext()
+    {
+        return context;
     }
 }
 
