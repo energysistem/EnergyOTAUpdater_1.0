@@ -1,8 +1,12 @@
 package es.energy.energyotaupdater;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,12 +37,12 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
                 //si la rom obtenida es más actual
                 if (Utils.isUpdate(info)) {
                     //TODO: temporal
-                    Toast.makeText(context,"fucking yeah!!, hay actualización",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"yeah!!, hay actualización",Toast.LENGTH_LONG).show();
 
                     cfg.storeUpdate(info);
                     //si están activadas las notificaciones, lanzamos la de actualización
                     if (cfg.getShowNotif()) {
-                        //Utils.showUpdateNotif(context, info);
+                        Utils.showUpdateNotif(context, info);
                     } else {
                         Log.v("OTA::Receiver", "found update, notif not shown");
                     }
@@ -54,4 +58,5 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
             }
         }).execute();
     }
+
 }

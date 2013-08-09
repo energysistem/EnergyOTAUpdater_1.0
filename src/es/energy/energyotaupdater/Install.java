@@ -30,7 +30,6 @@ public class Install {
                 try {
                     String name = file.getName();
 
-                    //CODIGO ACTUALIZACIÓN: ROCKCHIP
                     //reiniciamos los directorios por si acaso
                     RECOVERY_DIR.mkdirs();
                     COMMAND_FILE.delete();

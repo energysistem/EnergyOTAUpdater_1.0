@@ -11,11 +11,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.net.SocketTimeoutException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by DFV on 26/07/13.
@@ -54,14 +59,20 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
         try {
             //creo los parametros incluyendo dispositivo, versión de firmware y versión de hardware
             ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-            params.add(new BasicNameValuePair("device", android.os.Build.DEVICE.toLowerCase()));
+            params.add(new BasicNameValuePair("device", android.os.Build.DEVICE.toLowerCase().replaceAll(" ","")));
             params.add(new BasicNameValuePair("fwversion", Utils.getFWVersion()));
             params.add(new BasicNameValuePair("hwversion", Utils.getHWVersion()));
 
             //lanzo la petición mágica al server indicado en el build.prop
-            HttpClient client = new DefaultHttpClient();
             //TODO: cambiar a HttpGet get = new HttpGet(Utils.getServerInfo() + "?" + URLEncodedUtils.format(params, "UTF-8"));
-            HttpGet get = new HttpGet("http://10.0.4.198:8080/index.php" + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            HttpGet get = new HttpGet("http://192.168.0.10:8080/index.php" + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            HttpParams httpParameters = new BasicHttpParams();
+            //ponemos un timeout para la conexión de 30 segundos
+            int timeoutConnection = 30000;
+            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+            int timeoutSocket = 30000;
+            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+            DefaultHttpClient client = new DefaultHttpClient(httpParameters);
             HttpResponse r = client.execute(get);
             int status = r.getStatusLine().getStatusCode();
             HttpEntity e = r.getEntity();
@@ -91,12 +102,16 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
                 error = "Server responded with error " + status;
                 return null;
             }
+        } catch (SocketTimeoutException ste)
+        {
+            ste.printStackTrace();
+            error = ste.getMessage();
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             error = e.getMessage();
+            return null;
         }
-
-        return null;
     }
 
     @Override

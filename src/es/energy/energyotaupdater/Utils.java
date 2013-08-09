@@ -1,8 +1,13 @@
 package es.energy.energyotaupdater;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.NotificationCompat;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -148,5 +153,48 @@ public class Utils {
             str.append(HEX_DIGITS[0xF & bytes[q]]);
         }
         return str.toString();
+    }
+
+    public static void showUpdateNotif(Context ctx, RomInfo info) {
+        Intent i = new Intent(ctx, OTAUpdater.class);
+        i.setAction(OTAUpdater.NOTIF_ACTION);
+        info.addToIntent(i);
+
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Notification notif = null;
+
+        Notification.Builder builder = new Notification.Builder(ctx);
+        builder.setContentIntent(contentIntent);
+        builder.setContentTitle("Actualización disponible!");
+        builder.setContentText("Rom para descargar");
+        builder.setTicker("Rom para descargar");
+        builder.setWhen(System.currentTimeMillis());
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        notif = builder.getNotification();
+
+        nm.notify(1, notif);
+    }
+
+    public static NotificationCompat.Builder showDownloadNotif(Context ctx, RomInfo info, Intent i) {
+        //Intent i = new Intent(ctx, OTAUpdater.class);
+        //i.setAction(OTAUpdater.NOTIF_ACTION);
+        //info.addToIntent(i);
+
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent contentIntent = PendingIntent.getActivity(OTAUpdater.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx).
+            setContentIntent(contentIntent).
+            setContentTitle("Descargando!").
+            setContentText("Rom descargándose").
+            setProgress(0, 0, true).
+            setTicker("Rom descargándose").
+            setSmallIcon(R.drawable.ic_launcher);
+
+        nm.notify(28058928, builder.build());
+        return builder;
     }
 }
