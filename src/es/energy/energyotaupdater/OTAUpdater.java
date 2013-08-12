@@ -111,6 +111,7 @@ public class OTAUpdater extends Activity {
 
         Log.d("test",String.valueOf(getIntent().getIntExtra("dltask",0)));
 
+        //si vengo del segundo plano, creo un dialogo y lo engancho a la descarga en progreso
         if ((savedInstance != null && savedInstance instanceof DownloadTask) || getIntent().getIntExtra("dltask",0)==1) {
             dialogFromNotif = true;
             dlTask = (DownloadTask) savedInstance;
