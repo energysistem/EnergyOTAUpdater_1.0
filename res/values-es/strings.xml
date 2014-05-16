@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Energy OTA Updater</string>
+    <string name="action_settings">Configuración</string>
+    <string name="hello_world">Hola mundo!</string>
+    <string name="device">Dispositivo:</string>
+    <string name="search">Buscar Actualizaciones</string>
+    <string name="searching">Buscando...</string>
+    <string name="download">Descargar</string>
+    <string name="downloading">Descargando</string>
+    <string name="download_in_progress">Descarga en curso</string>
+    <string name="changelog">Mejoras: </string>
+    <string name="cancel">Cancelar</string>
+    <string name="background">Segundo plano</string>
+    <string name="update_found">¡Actualización encontrada!</string>
+    <string name="new_version">Nueva versión: </string>
+    <string name="version"> , versión actual:</string>
+    <string name="download_error">Error en la descarga</string>
+    <string name="md5_error">Error al comprobar MD5</string>
+    <string name="descarga_interrumpida">Descarga Interrumpida</string>
+    <string name="sin_espacio">No hay espacio libre suficiente para la descarga</string>
+    <string name="descarga_finalizada">¡Descarga finalizada!</string>
+    <string name="click_instalar">Click para instalar</string>
+    <string name="error_searching_updates">Ha ocurrido un error al buscar actualizaciones</string>
+    <string name="no_updates">No se han encontrado actualizaciones</string>
+    <string name="update_available">¡Actualización disponible!</string>
+    <string name="new_version_found">Nueva versión encontrada</string>
+    <string name="install_update">Instalar actualización</string>
+    <string name="install">Instalar</string>
+    <string name="update_not_supported">Actualización no soportada</string>
+    <string name="install_text">Se va a instalar la actualización. (Se requiere reinicio)</string>
+</resources>

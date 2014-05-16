@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +29,7 @@ public class Utils {
     private static String hwversion=null;
     private static String cachedOSSdPath = null;
     private static String cachedRcvrySdPath = null;
+    public static OTAUpdater.DownloadTask dt;
 
     //obtener informacion de server desde build.prop, por defecto "updates.energysistem.com"
     public static String getServerInfo() {
@@ -34,7 +38,11 @@ public class Utils {
         }
         if (serverinfo==null)
         {
-            serverinfo="updates.energysistem.com";
+            serverinfo="http://updates.energysistem.com/ota";
+        }
+        if (!serverinfo.contains("http://") && !serverinfo.contains("https://"))
+        {
+            serverinfo="http://"+serverinfo;
         }
         return serverinfo;
     }
@@ -52,10 +60,13 @@ public class Utils {
 
     //obtener version de Hardware desde build.prop, por defecto "A"
     public static String getHWVersion() {
-        if (hwversion==null) {
-            //TODO: coger hwversion de build.prop
+        if (hwversion == null) {
+            hwversion = getprop(Config.OTA_HW_VERSION);
         }
-        return "A";
+        if (hwversion == null) {
+            hwversion = "A";
+        }
+        return hwversion;
     }
 
     //Función para comprobar si tenemos conexión de red
@@ -112,15 +123,15 @@ public class Utils {
 
     //función que comprueba si una ROM obtenida desde el server es una actualización respecto a la versión instalada
     public static boolean isUpdate(RomInfo info) {
-        if (info == null) return false;
+        if (info == null) return false;/*
         if (info.fwversion != null) {
             if (getFWVersion() == null || !info.fwversion.equalsIgnoreCase(getFWVersion())) return true;
-        }
+        }*/
         /*
         if (info.date != null) {
             if (getOtaDate() == null || info.date.after(getOtaDate())) return true;
         }*/
-        return false;
+        return true;
     }
 
     //función que obtiene el PATH de la SD en Android desde el build.prop, por defecto /sdcard
@@ -128,7 +139,7 @@ public class Utils {
         if (cachedOSSdPath == null) {
             cachedOSSdPath = getprop(Config.OTA_SD_PATH_OS_PROP);
             if (cachedOSSdPath == null) {
-                cachedOSSdPath = "sdcard";
+                cachedOSSdPath = "/sdcard";
             }
         }
         return cachedOSSdPath;
@@ -139,7 +150,7 @@ public class Utils {
         if (cachedRcvrySdPath == null) {
             cachedRcvrySdPath = getprop(Config.OTA_SD_PATH_RECOVERY_PROP);
             if (cachedRcvrySdPath == null) {
-                cachedRcvrySdPath = "sdcard";
+                cachedRcvrySdPath = "/sdcard";
             }
         }
         return cachedRcvrySdPath;
@@ -167,14 +178,14 @@ public class Utils {
 
         Notification.Builder builder = new Notification.Builder(ctx);
         builder.setContentIntent(contentIntent);
-        builder.setContentTitle("Actualización disponible!");
-        builder.setContentText("Rom para descargar");
-        builder.setTicker("Rom para descargar");
+        builder.setContentTitle(ctx.getString(R.string.update_available));
+        builder.setContentText(ctx.getString(R.string.new_version_found));
+        builder.setTicker(ctx.getString(R.string.new_version_found));
         builder.setWhen(System.currentTimeMillis());
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setSmallIcon(R.drawable.icon_notif);
         notif = builder.getNotification();
 
-        nm.notify(1, notif);
+        nm.notify(28058928, notif);
     }
 
     public static NotificationCompat.Builder showDownloadNotif(Context ctx, RomInfo info, Intent i) {
@@ -182,19 +193,52 @@ public class Utils {
         //i.setAction(OTAUpdater.NOTIF_ACTION);
         //info.addToIntent(i);
 
-        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent contentIntent = PendingIntent.getActivity(OTAUpdater.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx).
             setContentIntent(contentIntent).
-            setContentTitle("Descargando!").
-            setContentText("Rom descargándose").
+            setContentTitle(ctx.getString(R.string.downloading)).
+            setContentText(ctx.getString(R.string.download_in_progress)).
             setProgress(0, 0, true).
-            setTicker("Rom descargándose").
-            setSmallIcon(R.drawable.ic_launcher);
+            setTicker(ctx.getString(R.string.download_in_progress)).
+            setSmallIcon(R.drawable.icon_notif);
 
         nm.notify(28058928, builder.build());
         return builder;
+    }
+
+
+    public static void checkBorrarReiniciar()
+    {
+        File log=new File(Config.DL_PATH_FILE, "log");
+        if(log.exists())
+        {
+            File list[] = Config.DL_PATH_FILE.listFiles();
+            if (list!=null)
+            {
+                for(int i=0;i<list.length;i++)
+                {
+                    Log.d("EnergyOTA","Borrando archivo:"+list[i]);
+                    list[i].delete();
+                }
+            }
+        }
+    }
+
+    public static void guardarLog(File downloadfile)
+    {
+        try{
+            File log = new File(Config.DL_PATH_FILE,"log");
+            FileWriter fw=new FileWriter(log,true);
+            fw.write(downloadfile.getName());
+            fw.close();
+        }
+        catch (Exception e)
+        {
+            Log.e("EnergyOTA", "error al guardar el log");
+        }
     }
 }

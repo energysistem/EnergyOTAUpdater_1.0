@@ -3,6 +3,7 @@ package es.energy.energyotaupdater;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -62,10 +63,10 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
             params.add(new BasicNameValuePair("device", android.os.Build.DEVICE.toLowerCase().replaceAll(" ","")));
             params.add(new BasicNameValuePair("fwversion", Utils.getFWVersion()));
             params.add(new BasicNameValuePair("hwversion", Utils.getHWVersion()));
-
+            String test = Utils.getServerInfo();
             //lanzo la petición mágica al server indicado en el build.prop
-            //TODO: cambiar a HttpGet get = new HttpGet(Utils.getServerInfo() + "?" + URLEncodedUtils.format(params, "UTF-8"));
-            HttpGet get = new HttpGet("http://192.168.0.10:8080/index.php" + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            HttpGet get = new HttpGet(Utils.getServerInfo() + "/index.php" + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            //HttpGet get = new HttpGet("http://updates.energysistem.com/ota/index.php?device=energyi8dual&fwversion=1.0.0&hwversion=Z");
             HttpParams httpParameters = new BasicHttpParams();
             //ponemos un timeout para la conexión de 30 segundos
             int timeoutConnection = 30000;
@@ -83,33 +84,42 @@ public class GetInfoFromServer extends AsyncTask<Void,Void,RomInfo> {
                 JSONObject json = new JSONObject(data);
 
                 if (json.has("error")) {
-                    Log.e("OTA::Fetch", json.getString("error"));
+                    Log.e("EnergyOTA", json.getString("error"));
                     error = json.getString("error");
                     return null;
                 }
 
+
                 return new RomInfo(
-                        json.getString("rom"),
-                        json.getString("fwversion"),
-                        json.getString("hwversion"),
-                        json.getString("changelog"),
-                        json.getString("url"),
-                        json.getString("md5"),
-                        Date.valueOf(json.getString("date")),
-                        json.getString("type"));
+                        json.getString("ROM"),
+                        json.getString("FW_VERSION"),
+                        json.getString("HW_VERSION"),
+                        json.getString("CHANGELOG"),
+                        json.optString("CHANGELOG_EN"),
+                        json.optString("CHANGELOG_ES"),
+                        json.optString("CHANGELOG_PT"),
+                        json.optString("CHANGELOG_FR"),
+                        json.getString("URL"),
+                        json.getString("MD5"),
+                        Date.valueOf(json.getString("DATE")),
+                        json.getString("TYPE"));
+
             } else {
                 if (e != null) e.consumeContent();
                 error = "Server responded with error " + status;
+                //Toast.makeText(context,context.getString(R.string.no_updates),Toast.LENGTH_LONG).show();
                 return null;
             }
         } catch (SocketTimeoutException ste)
         {
             ste.printStackTrace();
             error = ste.getMessage();
+            //Toast.makeText(context,context.getString(R.string.no_updates),Toast.LENGTH_LONG).show();
             return null;
         } catch (Exception e) {
             e.printStackTrace();
             error = e.getMessage();
+            //Toast.makeText(context,context.getString(R.string.no_updates),Toast.LENGTH_LONG).show();
             return null;
         }
     }
