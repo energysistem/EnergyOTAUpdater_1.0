@@ -46,10 +46,6 @@ public class Install {
                     //creamos un file apuntando al archivo
                     //File update=new File("/sdcard/update.img");
 
-                    //obtenemos su dirección en forma bonita
-                    //String archivoconrutajambalumba = file.getCanonicalPath();
-                    //Log.d("EnergyOTA", archivoconrutajambalumba);
-
 
                     if (type.equalsIgnoreCase("R")) {
                         //solución para recovery con path modificado a la sd

@@ -149,12 +149,14 @@ public class Utils {
     public static String getRcvrySdPath() {
         if (cachedRcvrySdPath == null) {
             cachedRcvrySdPath = getprop(Config.OTA_SD_PATH_RECOVERY_PROP);
+            /*
             Boolean isSDPresent=false;
             File dir = new File("/storage/sdcard1/ENERGY-Updater");
             if(dir.exists() && dir.isDirectory()) {
                 isSDPresent=true;
-            }
-            if (cachedRcvrySdPath == null || isSDPresent) {
+            }*/
+            //if (cachedRcvrySdPath == null || isSDPresent) {
+            if (cachedRcvrySdPath == null) {
                 cachedRcvrySdPath = "/sdcard";
             }
         }
