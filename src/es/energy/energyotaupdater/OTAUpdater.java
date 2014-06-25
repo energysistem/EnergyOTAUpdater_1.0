@@ -497,8 +497,6 @@ public class OTAUpdater extends Activity {
             try {
                 //cogemos la URL de descarga
                 URL getUrl = new URL(info.downurl);
-                //Log.v("OTA::Download", "downloading from: " + getUrl);
-                //Log.d("OTA::Download", "downloading to: " + destFile.getAbsolutePath());
 
                 //iniciamos conexión
                 URLConnection conn = getUrl.openConnection();

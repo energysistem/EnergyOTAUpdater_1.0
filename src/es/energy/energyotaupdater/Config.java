@@ -17,6 +17,8 @@ public class Config {
     public static final String OTA_HW_VERSION = "energy.otahwversion";
     public static final String OTA_SD_PATH_OS_PROP = "energy.sdcardpath.android";
     public static final String OTA_SD_PATH_RECOVERY_PROP = "energy.sdcardpath.recovery";
+    public static final String OTA_EXTSD_PATH_OS_PROP = "energy.extsdcardpath.android";
+    public static final String OTA_EXTSD_PATH_RECOVERY_PROP = "energy.extsdcardpath.recovery";
 
     public static final int WAKE_TIMEOUT = 30000;
 

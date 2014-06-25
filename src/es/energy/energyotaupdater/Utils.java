@@ -149,7 +149,12 @@ public class Utils {
     public static String getRcvrySdPath() {
         if (cachedRcvrySdPath == null) {
             cachedRcvrySdPath = getprop(Config.OTA_SD_PATH_RECOVERY_PROP);
-            if (cachedRcvrySdPath == null) {
+            Boolean isSDPresent=false;
+            File dir = new File("/storage/sdcard1/ENERGY-Updater");
+            if(dir.exists() && dir.isDirectory()) {
+                isSDPresent=true;
+            }
+            if (cachedRcvrySdPath == null || isSDPresent) {
                 cachedRcvrySdPath = "/sdcard";
             }
         }
@@ -174,25 +179,18 @@ public class Utils {
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Notification notif = null;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx).
+        setContentIntent(contentIntent).
+        setContentTitle(ctx.getString(R.string.update_available)).
+        setContentText(ctx.getString(R.string.new_version_found)).
+        setTicker(ctx.getString(R.string.new_version_found)).
+        setWhen(System.currentTimeMillis()).
+        setSmallIcon(R.drawable.icon_notif);
 
-        Notification.Builder builder = new Notification.Builder(ctx);
-        builder.setContentIntent(contentIntent);
-        builder.setContentTitle(ctx.getString(R.string.update_available));
-        builder.setContentText(ctx.getString(R.string.new_version_found));
-        builder.setTicker(ctx.getString(R.string.new_version_found));
-        builder.setWhen(System.currentTimeMillis());
-        builder.setSmallIcon(R.drawable.icon_notif);
-        notif = builder.getNotification();
-
-        nm.notify(28058928, notif);
+        nm.notify(28058928, builder.build());
     }
 
     public static NotificationCompat.Builder showDownloadNotif(Context ctx, RomInfo info, Intent i) {
-        //Intent i = new Intent(ctx, OTAUpdater.class);
-        //i.setAction(OTAUpdater.NOTIF_ACTION);
-        //info.addToIntent(i);
-
 
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -230,6 +228,7 @@ public class Utils {
 
     public static void guardarLog(File downloadfile)
     {
+
         try{
             File log = new File(Config.DL_PATH_FILE,"log");
             FileWriter fw=new FileWriter(log,true);
@@ -240,5 +239,6 @@ public class Utils {
         {
             Log.e("EnergyOTA", "error al guardar el log");
         }
+
     }
 }

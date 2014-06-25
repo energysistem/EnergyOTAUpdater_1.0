@@ -22,7 +22,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon_notif"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo">
         <activity
@@ -31,13 +31,20 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="es.energy.energyotaupdater.SettingsReceiver"
+            android:label="@string/app_name" >
         </activity>
 
         <receiver android:name="es.energy.energyotaupdater.UpdateCheckReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 

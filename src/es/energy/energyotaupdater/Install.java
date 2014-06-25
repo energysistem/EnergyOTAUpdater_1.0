@@ -2,6 +2,7 @@ package es.energy.energyotaupdater;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,8 +47,8 @@ public class Install {
                     //File update=new File("/sdcard/update.img");
 
                     //obtenemos su dirección en forma bonita
-                    String archivoconrutajambalumba = file.getCanonicalPath();
-                    Log.d("EnergyOTA", archivoconrutajambalumba);
+                    //String archivoconrutajambalumba = file.getCanonicalPath();
+                    //Log.d("EnergyOTA", archivoconrutajambalumba);
 
 
                     if (type.equalsIgnoreCase("R")) {
@@ -63,7 +64,6 @@ public class Install {
                     } else {
                         Toast.makeText(ctx, ctx.getString(R.string.update_not_supported), Toast.LENGTH_LONG).show();
                     }
-                    //reiniciamos en recovery
 
                 } catch (Exception e) {
                     e.printStackTrace();
